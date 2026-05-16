@@ -1,0 +1,15 @@
+:{$PORT} {
+    # Todo lo que entre por la ruta /chat/ lo mandamos a WhaTicket
+    handle_path /chat/* {
+        reverse_proxy https://dynamic-simplicity-production-a986.up.railway.app {
+            header_up Host {upstream_hostport}
+        }
+    }
+
+    # Todo el resto del tráfico (la raíz) va directo para EspoCRM
+    handle /* {
+        reverse_proxy https://espocrm-production-6061.up.railway.app {
+            header_up Host {upstream_hostport}
+        }
+    }
+}
