@@ -2,15 +2,11 @@
     # ==========================================
     # 1. FRONTEND (La parte visual de WhaTicket)
     # ==========================================
-    
-    # Atrapa el HTML principal
     handle_path /chat* {
         reverse_proxy https://dynamic-simplicity-production-a986.up.railway.app {
             header_up Host {upstream_hostport}
         }
     }
-    
-    # Atrapa los colores, scripts y audios
     handle /assets/* {
         reverse_proxy https://dynamic-simplicity-production-a986.up.railway.app {
             header_up Host {upstream_hostport}
@@ -20,16 +16,18 @@
     # ==========================================
     # 2. BACKEND (El motor de WhaTicket)
     # ==========================================
-    
-    # El carril exclusivo para la API (Login, mensajes, etc)
-    handle_path /wtapi* {
+    handle /socket.io/* {
         reverse_proxy https://whaticket-community-production-d61c.up.railway.app {
             header_up Host {upstream_hostport}
         }
     }
 
-    # El chat en tiempo real
-    handle /socket.io/* {
+    # LA MAGIA: Si la petición viene desde el chat y no es visual, es de la API.
+    @chat_api {
+        header Referer */chat*
+        not path /chat* /assets* /socket.io*
+    }
+    handle @chat_api {
         reverse_proxy https://whaticket-community-production-d61c.up.railway.app {
             header_up Host {upstream_hostport}
         }
