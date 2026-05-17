@@ -1,26 +1,12 @@
 :{$PORT} {
-    # 1. La pantalla principal del chat
-    handle_path /chat/* {
+    # Al sacarle el "_path" a la palabra "handle", el proxy le pasa la ruta /chat/ entera a WhaTicket
+    handle /chat/* {
         reverse_proxy https://dynamic-simplicity-production-a986.up.railway.app {
             header_up Host {upstream_hostport}
         }
     }
     
-    # 2. Los archivos visuales de WhaTicket (React)
-    handle /static/* {
-        reverse_proxy https://dynamic-simplicity-production-a986.up.railway.app {
-            header_up Host {upstream_hostport}
-        }
-    }
-
-    # 3. La conexión en tiempo real de WhatsApp
-    handle /socket.io/* {
-        reverse_proxy https://dynamic-simplicity-production-a986.up.railway.app {
-            header_up Host {upstream_hostport}
-        }
-    }
-
-    # 4. Todo el resto del tráfico se lo mandamos a EspoCRM
+    # Todo el resto sigue yendo a EspoCRM
     handle /* {
         reverse_proxy https://espocrm-production-6061.up.railway.app {
             header_up Host {upstream_hostport}
