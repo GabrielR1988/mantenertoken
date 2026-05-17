@@ -11,17 +11,24 @@
         }
     }
 
-    # 2. BACKEND: La API (Acá atrapamos lo que configuramos en el paso 1)
+    # 2. BACKEND API: Forzamos a que NO use caché (Chau problemas de 304)
     handle_path /wtapi* {
         reverse_proxy https://whaticket-community-production-d61c.up.railway.app {
             header_up Host {upstream_hostport}
+            
+            # Estas cabeceras obligan al navegador a pedir datos reales siempre, ignorando el 304
+            header_down Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+            header_down Pragma "no-cache"
+            header_down Expires "0"
         }
     }
 
-    # 3. WEBSOCKETS: El tiempo real
+    # 3. WEBSOCKETS: Configuración pesada para que no se cuelguen en Railway
     handle /socket.io/* {
         reverse_proxy https://whaticket-community-production-d61c.up.railway.app {
             header_up Host {upstream_hostport}
+            header_up Upgrade {http.request.header.Upgrade}
+            header_up Connection {http.request.header.Connection}
         }
     }
 
