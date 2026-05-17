@@ -1,6 +1,6 @@
 :{$PORT} {
     # 1. El iframe principal del chat
-    handle_path /chat/* {
+    handle /chat/* {
         reverse_proxy https://whaticket-community-production-d61c.up.railway.app {
             header_up Host {upstream_hostport}
         }
