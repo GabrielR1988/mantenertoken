@@ -3,6 +3,9 @@
     handle_path /chat* {
         reverse_proxy https://dynamic-simplicity-production-a986.up.railway.app {
             header_up Host {upstream_hostport}
+            
+            # Forzamos al navegador a que mantenga el contenedor estable sin brincos de foco
+            header_down Content-Security-Policy "sandbox allow-scripts allow-same-origin allow-forms allow-popups;"
         }
     }
     handle /assets/* {
