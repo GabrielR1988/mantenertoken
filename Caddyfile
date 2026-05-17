@@ -1,33 +1,43 @@
 :{$PORT} {
-    # 1. Atrapa /chat y /chat/ (usamos handle_path para limpiar la ruta)
+    # ==========================================
+    # 1. FRONTEND (La parte visual de WhaTicket)
+    # ==========================================
+    
+    # Atrapa el HTML principal
     handle_path /chat* {
-        reverse_proxy https://whaticket-community-production-d61c.up.railway.app {
+        reverse_proxy https://dynamic-simplicity-production-a986.up.railway.app {
             header_up Host {upstream_hostport}
         }
     }
     
-    # 2. Los archivos visuales, js y audios
+    # Atrapa los colores, scripts y audios
     handle /assets/* {
-        reverse_proxy https://whaticket-community-production-d61c.up.railway.app {
+        reverse_proxy https://dynamic-simplicity-production-a986.up.railway.app {
             header_up Host {upstream_hostport}
         }
     }
 
-    # 3. La API (Atrapa /wtapi y /wtapi/)
+    # ==========================================
+    # 2. BACKEND (El motor de WhaTicket)
+    # ==========================================
+    
+    # El carril exclusivo para la API (Login, mensajes, etc)
     handle_path /wtapi* {
         reverse_proxy https://whaticket-community-production-d61c.up.railway.app {
             header_up Host {upstream_hostport}
         }
     }
 
-    # 4. Los WebSockets
+    # El chat en tiempo real
     handle /socket.io/* {
         reverse_proxy https://whaticket-community-production-d61c.up.railway.app {
             header_up Host {upstream_hostport}
         }
     }
 
-    # 5. Todo lo demás va a EspoCRM
+    # ==========================================
+    # 3. CRM (Todo el resto del tráfico)
+    # ==========================================
     handle /* {
         reverse_proxy https://espocrm-production-6061.up.railway.app {
             header_up Host {upstream_hostport}
