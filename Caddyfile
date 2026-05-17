@@ -1,26 +1,26 @@
 :{$PORT} {
-    # 1. El iframe principal del chat
-    handle /chat/* {
+    # 1. Atrapa /chat y /chat/ (usamos handle_path para limpiar la ruta)
+    handle_path /chat* {
         reverse_proxy https://whaticket-community-production-d61c.up.railway.app {
             header_up Host {upstream_hostport}
         }
     }
     
-    # 2. Los archivos visuales y sonidos de WhaTicket (Acá arreglamos el error del archivo "howler.js")
+    # 2. Los archivos visuales, js y audios
     handle /assets/* {
         reverse_proxy https://whaticket-community-production-d61c.up.railway.app {
             header_up Host {upstream_hostport}
         }
     }
 
-    # 3. EL CARRIL EXCLUSIVO PARA LA API
-    handle_path /wtapi/* {
+    # 3. La API (Atrapa /wtapi y /wtapi/)
+    handle_path /wtapi* {
         reverse_proxy https://whaticket-community-production-d61c.up.railway.app {
             header_up Host {upstream_hostport}
         }
     }
 
-    # 4. Los WebSockets (Conexión en tiempo real)
+    # 4. Los WebSockets
     handle /socket.io/* {
         reverse_proxy https://whaticket-community-production-d61c.up.railway.app {
             header_up Host {upstream_hostport}
