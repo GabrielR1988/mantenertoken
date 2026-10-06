@@ -37,7 +37,7 @@
 
     # 4. CRM: Todo lo demás va a EspoCRM
     handle /* {
-        reverse_proxy https://espocrm-production-6061.up.railway.app {
+        reverse_proxy https://espocrm-custom-production.up.railway.app {
             header_up Host {upstream_hostport}
         }
     }
